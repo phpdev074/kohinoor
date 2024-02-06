@@ -6,6 +6,7 @@ import cors from 'cors';
 import db from './config/dbConfig.js';
 import fileUpload from 'express-fileupload';
 import AdminRoutes from './router/AdminRouter.js';
+import invoiceRouter from './router/InnvoiceRouter.js';
 const app = express();
 app.use(fileUpload());
 app.use(bodyParser.json());
@@ -15,6 +16,7 @@ db.once('open', () => {
 });
 app.use(cors());
 app.use("/api/admin", AdminRoutes);
+app.use("/api/invoice", invoiceRouter);
 app.use((err,res) => {
   console.error(err.stack);
   res.status(500).send('Something went wrong!');
