@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice</title>
+    <style>
+        /* Add your custom CSS styles here */
+    </style>
+</head>
+<body>
+    <h1>Invoice</h1>
+    <% data.forEach(invoice => { %>
+        <div>
+            <p>Name: <%= invoice.name %></p>
+            <p>Phone Number: <%= invoice.phoneNumber %></p>
+            <p>Products:</p>
+            <ul>
+                <% invoice.productName.forEach((product, index) => { %>
+                    <li><%= product %>: HSN Code - <%= invoice.hsnCode[index] %>, Rate/Length - <%= invoice.ratePerLength[index] %>, Quantity - <%= invoice.quantity[index] %>, Meter - <%= invoice.meter[index] %></li>
+                <% }); %>
+            </ul>
+        </div>
+    <% }); %>
+</body>
+</html>

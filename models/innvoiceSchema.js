@@ -7,27 +7,28 @@ const invoiceSchema = new mongoose.Schema({
   phoneNumber: {
     type: String,
     required: true,
+    unique:true
   },
-  productName: {
+  productName: [{
     type: String,
     required: true,
-  },
-  hsnCode: {
+  }],
+  hsnCode: [{
     type: String,
     required: true,
-  },
-  ratePerLength: {
+  }],
+  ratePerLength:[ {
     type: Number,
     required: true,
-  },
-  quantity: {
+  }],
+  quantity: [{
     type: Number,
     required: true,
-  },
-  meter: {
+  }],
+  meter: [{
     type: Number,
     required: true,
-  },
+  }],
   file: {
     type: String, 
   },
