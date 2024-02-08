@@ -3,6 +3,6 @@ import { createCategory,getCategoryList,findCategoryOnTheBasisOfSellerId } from 
 import verifyAuthToken from '../middileware/JwtVerify.js';
 const categoryRouter = express.Router();
 categoryRouter.post("/",verifyAuthToken,createCategory)
-categoryRouter.get("/get-category-list",verifyAuthToken,getCategoryList)
-categoryRouter.get("/get-category-data",verifyAuthToken,findCategoryOnTheBasisOfSellerId)
+categoryRouter.get("/get-stockist-list",verifyAuthToken,getCategoryList)
+categoryRouter.get("/get-stockist-data",verifyAuthToken,findCategoryOnTheBasisOfSellerId)
 export default categoryRouter;
