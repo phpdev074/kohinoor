@@ -25,7 +25,6 @@ export const createInvoice = async (req, res) => {
         quantity,
         meter,
       } = req.body;
-  
       const productNameArray = productName ? productName.split(",") : [];
       const hsnCodeArray = hsnCode ? hsnCode.split(",") : [];
       const ratePerLengthArray = ratePerLength ? ratePerLength.split(",").map(Number) : [];
