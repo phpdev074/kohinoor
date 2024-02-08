@@ -49,11 +49,11 @@ export const createCategory = async (req, res) => {
       handleSuccess(
         res,
         categoryCreate,
-        "Category created successfully",
+        "Stock created successfully",
         statusCode?.OK
       );
     } else {
-      handleFail(res, "Category created failed", statusCode?.BAD_REQUEST);
+      handleFail(res, "Stock created failed", statusCode?.BAD_REQUEST);
     }
   } catch (error) {
     console.log(error.message);
@@ -69,17 +69,18 @@ export const getCategoryList = async (req, res) => {
       handleSuccess(
         res,
         getListOfCategory,
-        "Category list fetched successfully",
+        "Stock list fetched successfully",
         statusCode?.OK
       );
     } else {
-      handleFail(res, "Category lsit fetch failes", statusCode?.BAD_REQUEST);
+      handleFail(res, "Stock lsit fetch failes", statusCode?.BAD_REQUEST);
     }
   } catch (error) {
     console.log(error.message);
     handleError(res, error.message, statusCode?.INTERNAL_SERVER_ERROR);
   }
 };
+
 export const findCategoryOnTheBasisOfSellerId = async (req, res) => {
   try {
     const sellerId = req.query.sellerId;
@@ -96,7 +97,7 @@ export const findCategoryOnTheBasisOfSellerId = async (req, res) => {
         handleSuccess(
           res,
           getCategory,
-          "Category Data fetched successfully",
+          "Stock Data fetched successfully",
           statusCode?.OK
         );
       } else {
