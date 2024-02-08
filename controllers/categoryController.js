@@ -53,7 +53,7 @@ export const createCategory = async (req, res) => {
 };
 export const getCategoryList = async(req,res)=>{
     try {
-            const getListOfCategory = await Category.find().sort({$natural:-1})
+            const getListOfCategory = await Category.find().sort({$natural:-1}).populate("seller","name")
             if(getListOfCategory)
             {
                 handleSuccess(res,getListOfCategory,"Category list fetched successfully",statusCode?.OK)
