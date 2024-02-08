@@ -18,15 +18,15 @@ const invoiceSchema = new mongoose.Schema({
     required: true,
   }],
   ratePerLength:[ {
-    type: Number,
+    type: String,
     required: true,
   }],
   quantity: [{
-    type: Number,
+    type: String,
     required: true,
   }],
   meter: [{
-    type: Number,
+    type: String,
     required: true,
   }],
   file: {
