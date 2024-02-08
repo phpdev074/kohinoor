@@ -15,46 +15,42 @@ import statusCode from "../constants/statusCode.js";
 import pdfkit from "pdfkit";
 
 export const createInvoice = async (req, res) => {
-  try {
-    const {
-      name,
-      phoneNumber,
-      productName,
-      hsnCode,
-      ratePerLength,
-      quantity,
-      meter,
-    } = req.body;
-    const productNameArray = productName ? productName.split(",") : [];
-    const hsnCodeArray = hsnCode ? hsnCode.split(",") : [];
-    const ratePerLengthArray = ratePerLength ? ratePerLength.split(",") : [];
-    const quantityArray = quantity ? quantity.split(",") : [];
-    const meterArray = meter ? meter.split(",") : [];
-    const savedInvoice = await Invoice.create({
-      name,
-      phoneNumber,
-      productName: productNameArray,
-      hsnCode: hsnCodeArray,
-      ratePerLength: ratePerLengthArray,
-      quantity: quantityArray,
-      meter: meterArray,
-    });
-
-    if (savedInvoice) {
-      handleSuccess(
-        res,
-        savedInvoice,
-        "Invoice created successfully",
-        statusCode.OK
-      );
-    } else {
-      handleFail(res, "Invoice creation failed", statusCode.BAD_REQUEST);
+    try {
+      const {
+        name,
+        phoneNumber,
+        productName,
+        hsnCode,
+        ratePerLength,
+        quantity,
+        meter,
+      } = req.body;
+  
+      const productNameArray = productName ? productName.split(",") : [];
+      const hsnCodeArray = hsnCode ? hsnCode.split(",") : [];
+      const ratePerLengthArray = ratePerLength ? ratePerLength.split(",").map(Number) : [];
+      const quantityArray = quantity ? quantity.split(",").map(Number) : [];
+      const meterArray = meter ? meter.split(",").map(Number) : [];
+  
+      const savedInvoice = await Invoice.create({
+        name,
+        phoneNumber,
+        productName: productNameArray,
+        hsnCode: hsnCodeArray,
+        ratePerLength: ratePerLengthArray,
+        quantity: quantityArray,
+        meter: meterArray,
+      });
+        if (savedInvoice) {
+        handleSuccess(res, savedInvoice, "Invoice created successfully", statusCode.OK);
+      } else {
+        handleFail(res, "Invoice creation failed", statusCode.BAD_REQUEST);
+      }
+    } catch (error) {
+      console.error(error.message);
+      handleFail(res, error.message, statusCode.INTERNAL_SERVER_ERROR);
     }
-  } catch (error) {
-    console.error(error.message);
-    handleFail(res, error.message, statusCode.INTERNAL_SERVER_ERROR);
-  }
-};
+  };
 export const getInnvoice = async (req, res) => {
   try {
     const getLastCreatedInnvoice = await Invoice.find()
