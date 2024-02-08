@@ -10,6 +10,7 @@ import db from './config/dbConfig.js';
 import fileUpload from 'express-fileupload';
 import AdminRoutes from './router/AdminRouter.js';
 import invoiceRouter from './router/InnvoiceRouter.js';
+import categoryRouter from "./router/CategoryRouter.js"
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -24,6 +25,7 @@ db.once('open', () => {
 app.use(cors());
 app.use("/api/admin", AdminRoutes);
 app.use("/api/invoice", invoiceRouter);
+app.use("/api/category", categoryRouter);
 app.use((err,res) => {
   console.error(err.stack);
   res.status(500).send('Something went wrong!');
