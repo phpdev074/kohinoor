@@ -66,29 +66,48 @@ export const createCategory = async (req, res) => {
 export const getCategoryList = async (req, res) => {
   try {
     const { month, year } = req.query;
-    const startDate = new Date(year, month - 1, 1); 
-    const endDate = new Date(year, month, 0); 
-    const getListOfCategory = await Category.find({
-        date: { $gte: startDate, $lte: endDate }
-      })
-      .sort({ $natural: -1 })
-      .populate("seller", "name");
-    if (getListOfCategory) {
-      handleSuccess(
-        res,
-        getListOfCategory,
-        "Stock list fetched successfully",
-        statusCode?.OK
-      );
-    } else {
-      handleFail(res, "Stock lsit fetch failes", statusCode?.BAD_REQUEST);
+    if(month||year)
+    {
+        const startDate = new Date(year, month - 1, 1); 
+        const endDate = new Date(year, month, 0); 
+        const getListOfCategory = await Category.find({
+            date: { $gte: startDate, $lte: endDate }
+          })
+          .sort({ $natural: -1 })
+          .populate("seller", "name");
+        if (getListOfCategory) {
+          handleSuccess(
+            res,
+            getListOfCategory,
+            "Stock list fetched successfully",
+            statusCode?.OK
+          );
+        } else {
+          handleFail(res, "Stock lsit fetch failes", statusCode?.BAD_REQUEST);
+        }
     }
+    else
+    {
+        const getListOfCategory = await Category.find()
+          .sort({ $natural: -1 })
+          .populate("seller", "name");
+        if (getListOfCategory) {
+          handleSuccess(
+            res,
+            getListOfCategory,
+            "Stock list fetched successfully",
+            statusCode?.OK
+          );
+        } else {
+          handleFail(res, "Stock lsit fetch failes", statusCode?.BAD_REQUEST);
+        }
+    }
+
   } catch (error) {
     console.log(error.message);
     handleError(res, error.message, statusCode?.INTERNAL_SERVER_ERROR);
   }
 };
-
 export const findCategoryOnTheBasisOfSellerId = async (req, res) => {
   try {
     const sellerId = req.query.sellerId;
