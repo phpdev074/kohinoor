@@ -64,75 +64,67 @@ export const createCategory = async (req, res) => {
 };
 export const getCategoryList = async (req, res) => {
     try {
-      let { month, year, page, limit } = req.query;
-      page = parseInt(page) || 1; // default page number is 1
-      limit = parseInt(limit) || 10; // default limit is 10 documents per page
+      let { month, year, page, limit, sellerId } = req.query;
+      page = parseInt(page) || 1; 
+      limit = parseInt(limit) || 20; 
+      if (sellerId) {
+        const sellerObjectId = new mongoose.Types.ObjectId(sellerId);
+        //   const seller = await Seller.findById(sellerObjectId);
+        // if (!seller) {
+        //   return handleFail(res, "Seller not found", statusCode?.NOT_FOUND);
+        // }
+        const skip = (page - 1) * limit; 
+        const getListOfCategory = await Category.find({ seller: sellerObjectId })
+          .sort({ createdAt: -1 })
+          .skip(skip) 
+          .limit(limit) 
+          .populate("seller", "name");
   
-      let query = {};
-      if (month && year) {
-        const startDate = new Date(year, month - 1, 1);
-        const endDate = new Date(year, month, 0);
-        query.date = { $gte: startDate, $lte: endDate };
-      }
+        // Get total count based on seller query
+        const totalCount = await Category.countDocuments({ seller: sellerObjectId });
   
-      const totalCount = await Category.countDocuments(query); // Get total count of documents matching the query
-  
-      const totalPages = Math.ceil(totalCount / limit); // Calculate total number of pages
-  
-      const skip = (page - 1) * limit; // Calculate number of documents to skip
-  
-      const getListOfCategory = await Category.find(query)
-        .sort({ createdAt: -1 })
-        .skip(skip) // Skip documents
-        .limit(limit) // Limit number of documents per page
-        .populate("seller", "name");
-  
-      if (getListOfCategory) {
-        const count = getListOfCategory.length || 0;
-        const response = { getListOfCategory, count, totalPages, currentPage: page, totalCount };
-        handleSuccess(
-          res,
-          response,
-          "Stock list fetched successfully",
-          statusCode?.OK
-        );
+        if (getListOfCategory) {
+          const response = { getListOfCategory, count: getListOfCategory.length, currentPage: page, totalCount };
+          handleSuccess(
+            res,
+            response,
+            "Stock list fetched successfully",
+            statusCode?.OK
+          );
+        } else {
+          handleFail(res, "Stock list fetch failed", statusCode?.BAD_REQUEST);
+        }
       } else {
-        handleFail(res, "Stock list fetch failed", statusCode?.BAD_REQUEST);
+        let query = {};
+        if (month && year) {
+          const startDate = new Date(year, month - 1, 1);
+          const endDate = new Date(year, month, 0);
+          query.date = { $gte: startDate, $lte: endDate };
+        }
+        const totalCount = await Category.countDocuments(query); 
+        const totalPages = Math.ceil(totalCount / limit); 
+        const skip = (page - 1) * limit; 
+        const getListOfCategory = await Category.find(query)
+          .sort({ createdAt: -1 })
+          .skip(skip) 
+          .limit(limit) 
+          .populate("seller", "name");
+  
+        if (getListOfCategory) {
+          const response = { getListOfCategory, count: getListOfCategory.length, totalPages, currentPage: page, totalCount };
+          handleSuccess(
+            res,
+            response,
+            "Stock list fetched successfully",
+            statusCode?.OK
+          );
+        } else {
+          handleFail(res, "Stock list fetch failed", statusCode?.BAD_REQUEST);
+        }
       }
     } catch (error) {
       console.log(error.message);
       handleError(res, error.message, statusCode?.INTERNAL_SERVER_ERROR);
     }
   };
-export const findCategoryOnTheBasisOfSellerId = async (req, res) => {
-  try {
-    const sellerId = req.query.sellerId;
-    const sellerObjectId = new mongoose.Types.ObjectId(sellerId)
-    const checkSellerExist = await Seller.findOne({ _id: sellerObjectId });
-    if (!checkSellerExist) {
-      handleFail(res, "This seller is not exist", statusCode.BAD_REQUEST);
-    } else {
-      const getCategory = await Category.find({ seller: sellerObjectId }).populate(
-        "seller",
-        "name"
-      );
-      if (getCategory) {
-        handleSuccess(
-          res,
-          getCategory,
-          "Stock Data fetched successfully",
-          statusCode?.OK
-        );
-      } else {
-        handleFail(
-          res,
-          "No data Found on this sellerId",
-          statusCode?.PRECONDITION_FAILED
-        );
-      }
-    }
-  } catch (error) {
-    console.log(error.message);
-    handleError(res, error.message, statusCode?.INTERNAL_SERVER_ERROR);
-  }
-};
+  
