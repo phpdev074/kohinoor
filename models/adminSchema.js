@@ -14,10 +14,14 @@ const adminSchema = new mongoose.Schema({
     lowercase: true,
     trim: true,
   },
+  status:{
+    type:Boolean,
+    default:false
+  },
   password: {
     type: String,
     required: true,
-    minlength: 8, // Enforce strong passwords
+    minlength: 8, 
   },
   createdAt: {
     type: Date,
