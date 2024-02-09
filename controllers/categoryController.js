@@ -14,7 +14,6 @@ import { v4 as uuidv4 } from "uuid";
 export const createCategory = async (req, res) => {
   try {
     const { categoryName, seller, billNo,date } = req.body;
-    console.log(date)
     const convertedDate = new Date(date)
     let images = req.files && req.files.images;
     const bucketName = process.env.AWS_S3_BUCKET_NAME;
@@ -64,56 +63,47 @@ export const createCategory = async (req, res) => {
   }
 };
 export const getCategoryList = async (req, res) => {
-  try {
-    const { month, year } = req.query;
-    if(month||year)
-    {
-        const startDate = new Date(year, month - 1, 1); 
-        const endDate = new Date(year, month, 0); 
-        console.log("startDate",startDate)
-        console.log("endDate",endDate)
-        const getListOfCategory = await Category.find({
-            date: { $gte: startDate, $lte: endDate }
-          })
-          .sort({ $natural: -1 })
-          .populate("seller", "name");
-        if (getListOfCategory) {
-            let count = getListOfCategory?.length
-            const resposne={getListOfCategory,count}
-          handleSuccess(
-            res,
-            resposne,
-            "Stock list fetched successfully",
-            statusCode?.OK
-          );
-        } else {
-          handleFail(res, "Stock lsit fetch failes", statusCode?.BAD_REQUEST);
-        }
+    try {
+      let { month, year, page, limit } = req.query;
+      page = parseInt(page) || 1; // default page number is 1
+      limit = parseInt(limit) || 10; // default limit is 10 documents per page
+  
+      let query = {};
+      if (month && year) {
+        const startDate = new Date(year, month - 1, 1);
+        const endDate = new Date(year, month, 0);
+        query.date = { $gte: startDate, $lte: endDate };
+      }
+  
+      const totalCount = await Category.countDocuments(query); // Get total count of documents matching the query
+  
+      const totalPages = Math.ceil(totalCount / limit); // Calculate total number of pages
+  
+      const skip = (page - 1) * limit; // Calculate number of documents to skip
+  
+      const getListOfCategory = await Category.find(query)
+        .sort({ createdAt: -1 })
+        .skip(skip) // Skip documents
+        .limit(limit) // Limit number of documents per page
+        .populate("seller", "name");
+  
+      if (getListOfCategory) {
+        const count = getListOfCategory.length || 0;
+        const response = { getListOfCategory, count, totalPages, currentPage: page, totalCount };
+        handleSuccess(
+          res,
+          response,
+          "Stock list fetched successfully",
+          statusCode?.OK
+        );
+      } else {
+        handleFail(res, "Stock list fetch failed", statusCode?.BAD_REQUEST);
+      }
+    } catch (error) {
+      console.log(error.message);
+      handleError(res, error.message, statusCode?.INTERNAL_SERVER_ERROR);
     }
-    else
-    {
-        const getListOfCategory = await Category.find()
-          .sort({ $natural: -1 })
-          .populate("seller", "name");
-        if (getListOfCategory) {
-            let count = getListOfCategory?.length
-            const resposne={getListOfCategory,count}
-          handleSuccess(
-            res,
-            resposne,
-            "Stock list fetched successfully",
-            statusCode?.OK
-          );
-        } else {
-          handleFail(res, "Stock lsit fetch failes", statusCode?.BAD_REQUEST);
-        }
-    }
-
-  } catch (error) {
-    console.log(error.message);
-    handleError(res, error.message, statusCode?.INTERNAL_SERVER_ERROR);
-  }
-};
+  };
 export const findCategoryOnTheBasisOfSellerId = async (req, res) => {
   try {
     const sellerId = req.query.sellerId;

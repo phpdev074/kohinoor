@@ -54,43 +54,35 @@ export const createInvoice = async (req, res) => {
     handleFail(res, error.message, statusCode.INTERNAL_SERVER_ERROR);
   }
 };
-export const getCategoryList = async (req, res) => {
+export const getAllInvoice = async (req, res) => {
     try {
       let { month, year, page, limit } = req.query;
-      page = parseInt(page) || 1; 
-      limit = parseInt(limit) || 10; 
-      let query = {};
+      page = parseInt(page) || 1;
+      limit = parseInt(limit) || 20; 
+      let query = {}; 
       if (month && year) {
         const startDate = new Date(year, month - 1, 1);
         const endDate = new Date(year, month, 0);
-        query.date = { $gte: startDate, $lte: endDate };
+        query.createdAt = { $gte: startDate, $lte: endDate };
       }
-      const totalCount = await Category.countDocuments(query); 
+      const totalCount = await Invoice.countDocuments(query); 
       const totalPages = Math.ceil(totalCount / limit); 
       const skip = (page - 1) * limit; 
-      const getListOfCategory = await Category.find(query)
+      const invoices = await Invoice.find(query)
         .sort({ createdAt: -1 })
         .skip(skip) 
-        .limit(limit) 
-        .populate("seller", "name");
-      if (getListOfCategory) {
-        const count = getListOfCategory.length || 0;
-        const response = { getListOfCategory, count, totalPages, currentPage: page, totalCount };
-        handleSuccess(
-          res,
-          response,
-          "Stock list fetched successfully",
-          statusCode?.OK
-        );
-      } else {
-        handleFail(res, "Stock list fetch failed", statusCode?.BAD_REQUEST);
-      }
+        .limit(limit); 
+      handleSuccess(
+        res,
+        { invoices, totalPages, currentPage: page, totalCount },
+        "Invoice list fetched successfully",
+        statusCode?.OK
+      );
     } catch (error) {
       console.log(error.message);
       handleError(res, error.message, statusCode?.INTERNAL_SERVER_ERROR);
     }
   };
-  
 export const getInnvoice = async (req, res) => {
   try {
     const getLastCreatedInnvoice = await Invoice.find()
