@@ -15,7 +15,7 @@ export const adminRegistration = async (req, res) => {
     }
     const newUser = new adminSchema({ name, phoneNumber, password });
     await newUser.save();
-    const token = jwt.sign({ userId: newUser._id }, process.env.SECRET_KEY, { expiresIn: '24h' });
+    const token = jwt.sign({ userId: newUser._id }, process.env.SECRET_KEY);
 
     // Remove password from the response
     const userResponse = newUser.toObject();
@@ -35,7 +35,7 @@ export const adminLogin = async (req, res) => {
       if (!user || !(await bcrypt.compare(password, user.password))) {
         return res.status(401).json({ success: false, error: 'Invalid Phone Number or password' });
       }
-      const token = jwt.sign({ userId: user._id, userEmail: user.email }, process.env.SECRET_KEY, { expiresIn: '24h' });
+      const token = jwt.sign({ userId: user._id, userEmail: user.email }, process.env.SECRET_KEY);
       res.status(200).json({ success: true, token, message: 'User login successful' });
     } catch (err) {
       console.error(err);
