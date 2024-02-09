@@ -65,7 +65,12 @@ export const createCategory = async (req, res) => {
 };
 export const getCategoryList = async (req, res) => {
   try {
-    const getListOfCategory = await Category.find()
+    const { month, year } = req.query;
+    const startDate = new Date(year, month - 1, 1); 
+    const endDate = new Date(year, month, 0); 
+    const getListOfCategory = await Category.find({
+        date: { $gte: startDate, $lte: endDate }
+      })
       .sort({ $natural: -1 })
       .populate("seller", "name");
     if (getListOfCategory) {
