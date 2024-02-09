@@ -70,15 +70,19 @@ export const getCategoryList = async (req, res) => {
     {
         const startDate = new Date(year, month - 1, 1); 
         const endDate = new Date(year, month, 0); 
+        console.log("startDate",startDate)
+        console.log("endDate",endDate)
         const getListOfCategory = await Category.find({
             date: { $gte: startDate, $lte: endDate }
           })
           .sort({ $natural: -1 })
           .populate("seller", "name");
         if (getListOfCategory) {
+            let count = getListOfCategory?.length
+            const resposne={getListOfCategory,count}
           handleSuccess(
             res,
-            getListOfCategory,
+            resposne,
             "Stock list fetched successfully",
             statusCode?.OK
           );
@@ -92,9 +96,11 @@ export const getCategoryList = async (req, res) => {
           .sort({ $natural: -1 })
           .populate("seller", "name");
         if (getListOfCategory) {
+            let count = getListOfCategory?.length
+            const resposne={getListOfCategory,count}
           handleSuccess(
             res,
-            getListOfCategory,
+            resposne,
             "Stock list fetched successfully",
             statusCode?.OK
           );
