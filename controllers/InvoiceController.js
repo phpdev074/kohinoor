@@ -64,7 +64,11 @@ export const getAllInvoice = async (req, res) => {
         const startDate = new Date(year, month - 1, 1);
         const endDate = new Date(year, month, 0);
         query.createdAt = { $gte: startDate, $lte: endDate };
-      }
+    } else if (year) {
+        const startDate = new Date(year, 0, 1);
+        const endDate = new Date(year, 11, 31);
+        query.createdAt = { $gte: startDate, $lte: endDate };
+    }
       const totalCount = await Invoice.countDocuments(query); 
       const totalPages = Math.ceil(totalCount / limit); 
       const skip = (page - 1) * limit; 

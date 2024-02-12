@@ -69,10 +69,10 @@ export const getCategoryList = async (req, res) => {
       limit = parseInt(limit) || 20; 
       if (sellerId) {
         const sellerObjectId = new mongoose.Types.ObjectId(sellerId);
-        //   const seller = await Seller.findById(sellerObjectId);
-        // if (!seller) {
-        //   return handleFail(res, "Seller not found", statusCode?.NOT_FOUND);
-        // }
+          const seller = await Seller.findById(sellerObjectId);
+        if (!seller) {
+          return handleFail(res, "Seller not found", statusCode?.NOT_FOUND);
+        }
         const skip = (page - 1) * limit; 
         const getListOfCategory = await Category.find({ seller: sellerObjectId })
           .sort({ createdAt: -1 })
@@ -100,6 +100,11 @@ export const getCategoryList = async (req, res) => {
           const startDate = new Date(year, month - 1, 1);
           const endDate = new Date(year, month, 0);
           query.date = { $gte: startDate, $lte: endDate };
+        }
+        else if (year) {
+            const startDate = new Date(year, 0, 1);
+            const endDate = new Date(year, 11, 31);
+            query.createdAt = { $gte: startDate, $lte: endDate };
         }
         const totalCount = await Category.countDocuments(query); 
         const totalPages = Math.ceil(totalCount / limit); 
