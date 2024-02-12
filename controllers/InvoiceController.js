@@ -83,125 +83,136 @@ export const getAllInvoice = async (req, res) => {
       handleError(res, error.message, statusCode?.INTERNAL_SERVER_ERROR);
     }
   };
-export const getInnvoice = async (req, res) => {
-  try {
-    const getLastCreatedInnvoice = await Invoice.find()
-      .sort({ $natural: -1 })
-      .limit(1);
-    console.log(getLastCreatedInnvoice);
-    const headers = [
-      "HSN Code",
-      "Product Name",
-      "Rate per length",
-      "Quantity",
-      "Meter",
-    ];
-    const tableData = getLastCreatedInnvoice.map((item) => ({
-      productName: item.productName.join(", "),
-      hsnCode: item.hsnCode.join(", "),
-      ratePerLength: item.ratePerLength.join(", "),
-      quantity: item.quantity.join(", "),
-      meter: item.meter.join(", "),
-    }));
-    const tableTop = 500;
-    const rowHeight = 30;
-    const colWidth = 150;
-    const tableLeft = 30;
-    const doc = new pdfkit();
-    doc
-      .fontSize(15)
-      .font("Helvetica-Bold")
-      .text("Raymond", { align: "center" })
-      .moveDown();
-    doc
-      .fontSize(15)
-      .font("Helvetica-Bold")
-      .text("GST No. 04AUYPS3449PIZI", { align: "left" })
-      .moveUp(1)
-      .font("Helvetica-Bold")
-      .text("Retail", { align: "center" })
-      .moveUp(1)
-      .font("Helvetica-Bold")
-      .text("Time", { align: "right" })
-      .moveDown();
-    doc
-      .fontSize(24)
-      .font("Helvetica-Bold")
-      .text("Kohinoor Selections", { align: "center" })
-      .moveDown();
-    doc
-      .fontSize(15)
-      .font("Helvetica")
-      .text("SCO-71-72-73 SECTOR-17C", { align: "center" })
-      .moveDown(0.5);
-    doc
-      .fontSize(15)
-      .font("Helvetica")
-      .text("CHANDIGARH(UT) India", { align: "center" })
-      .moveDown(0.5);
-    doc
-      .fontSize(15)
-      .font("Helvetica")
-      .text("Phone N0.: 0172-2714545", { align: "center" })
-      .moveDown();
-    doc
-      .fontSize(15)
-      .font("Helvetica-Bold")
-      .text(
-        "..................................................................................",
-        { align: "center" }
-      )
-      .moveDown();
-    doc
-      .fontSize(15)
-      .font("Helvetica")
-      .text("INVOICE:", { align: "left" })
-      .moveUp(1)
-      .text("Date:", { align: "right" })
-      .moveDown();
-    doc
-      .fontSize(15)
-      .font("Helvetica")
-      .text("M/S:", { align: "left" })
-      .moveDown(0.5);
-    doc
-      .fontSize(15)
-      .font("Helvetica")
-      .text("NEAR SEN. SEC. SCHOOL RINGROAD RAJPURA RANI(pkl)", {
-        align: "left",
-      })
-      .moveDown();
-    doc
-      .fontSize(15)
-      .font("Helvetica")
-      .text("GST No. ", { align: "left" })
-      .moveDown();
-    doc.fontSize(15).font("Helvetica-Bold");
-    headers.map((header, i) => {
-      doc.text(header, tableLeft + i * colWidth, tableTop);
-    });
-    doc.font("Helvetica");
-    tableData.forEach((row, rowIndex) => {
-      Object.values(row).forEach((cell, colIndex) => {
-        const xPos = tableLeft + colIndex * colWidth;
-        const yPos = tableTop + (rowIndex + 1) * rowHeight;
+  export const getInnvoice = async (req, res) => {
+    try {
+      const getLastCreatedInnvoice = await Invoice.find()
+        .sort({ $natural: -1 })
+        .limit(1);
+      console.log(getLastCreatedInnvoice);
+      const headers = [
+        "HSN Code",
+        "Product Name",
+        "Rate per length",
+        "Quantity",
+        "Meter",
+      ];
+  
+      // Extracting data from the last invoice
+      const tableData = getLastCreatedInnvoice.map((item) => ({
+        productName: item.productName,
+        hsnCode: item.hsnCode,
+        ratePerLength: item.ratePerLength,
+        quantity: item.quantity,
+        meter: item.meter,
+      }));
+  
+      const tableTop = 500;
+      const rowHeight = 30;
+      const colWidth = 100;
+      const tableLeft = 30;
+      const doc = new pdfkit();
+  
+      doc
+        .fontSize(15)
+        .font("Helvetica-Bold")
+        .text("Raymond", { align: "center" })
+        .moveDown();
+      doc
+        .fontSize(15)
+        .font("Helvetica-Bold")
+        .text("GST No. 04AUYPS3449PIZI", { align: "left" })
+        .moveUp(1)
+        .font("Helvetica-Bold")
+        .text("Retail", { align: "center" })
+        .moveUp(1)
+        .font("Helvetica-Bold")
+        .text("Time", { align: "right" })
+        .moveDown();
+      doc
+        .fontSize(24)
+        .font("Helvetica-Bold")
+        .text("Kohinoor Selections", { align: "center" })
+        .moveDown();
+      doc
+        .fontSize(15)
+        .font("Helvetica")
+        .text("SCO-71-72-73 SECTOR-17C", { align: "center" })
+        .moveDown(0.5);
+      doc
+        .fontSize(15)
+        .font("Helvetica")
+        .text("CHANDIGARH(UT) India", { align: "center" })
+        .moveDown(0.5);
+      doc
+        .fontSize(15)
+        .font("Helvetica")
+        .text("Phone N0.: 0172-2714545", { align: "center" })
+        .moveDown();
+      doc
+        .fontSize(15)
+        .font("Helvetica-Bold")
+        .text(
+          "..................................................................................",
+          { align: "center" }
+        )
+        .moveDown();
+      doc
+        .fontSize(15)
+        .font("Helvetica")
+        .text("INVOICE:", { align: "left" })
+        .moveUp(1)
+        .text("Date:", { align: "right" })
+        .moveDown();
+      doc
+        .fontSize(15)
+        .font("Helvetica")
+        .text("M/S:", { align: "left" })
+        .moveDown(0.5);
+      doc
+        .fontSize(15)
+        .font("Helvetica")
+        .text("NEAR SEN. SEC. SCHOOL RINGROAD RAJPURA RANI(pkl)", {
+          align: "left",
+        })
+        .moveDown();
+      doc
+        .fontSize(15)
+        .font("Helvetica")
+        .text("GST No. ", { align: "left" })
+        .moveDown();
+      doc.fontSize(11).font("Helvetica-Bold");
+        headers.forEach((header, i) => {
+        const xPos = tableLeft + i * colWidth;
+        const yPos = tableTop;
         const cellWidth = colWidth;
         const cellHeight = rowHeight;
         doc.rect(xPos, yPos, cellWidth, cellHeight).stroke();
-        doc.text(String(cell), xPos + 5, yPos + 5);
+        doc.text(header, xPos + 5, yPos + 5);
       });
-    });
-
-    res.setHeader("Content-Type", "application/pdf");
-    res.setHeader("Content-Disposition", 'attachment; filename="invoice.pdf"');
-    doc.pipe(res);
-    doc.end();
-    console.log(getLastCreatedInnvoice);
-  } catch (error) {
-    const message = error.message;
-    handleError(res, message, statusCode?.INTERNAL_SERVER_ERROR);
-  }
-};
+      doc.fontSize(11).font("Helvetica");
+        tableData.forEach((row, rowIndex) => {
+        Object.entries(row).forEach(([key, value], colIndex) => {
+          const xPos = tableLeft + colIndex * colWidth;
+          const yPos = tableTop + (rowIndex + 1) * rowHeight;
+          const cellWidth = colWidth;
+          const cellHeight = rowHeight;
+          const lines = Array.isArray(value) ? value : [value]; 
+          lines.forEach((line, index) => {
+            doc.text(String(line), xPos + 5, yPos + index * rowHeight, { width: cellWidth });
+          });
+        });
+      });
+  
+      res.setHeader("Content-Type", "application/pdf");
+      res.setHeader("Content-Disposition", 'attachment; filename="invoice.pdf"');
+      doc.pipe(res);
+      doc.end();
+      console.log(getLastCreatedInnvoice);
+    } catch (error) {
+      const message = error.message;
+      handleError(res, message, statusCode?.INTERNAL_SERVER_ERROR);
+    }
+  };
 export const createSeller = async (req, res) => {
   try {
     const { name } = req.body;
@@ -235,3 +246,33 @@ export const getAllSeller = async (req, res) => {
     handleError(res, error.message, statusCode?.INTERNAL_SERVER_ERROR);
   }
 };
+export const updateSeller = async (req, res) => {
+    try {
+      const { id } = req.query; 
+      const { name } = req.body; 
+      const updatedSeller = await Seller.findByIdAndUpdate(id, { name }, { new: true });
+        if (updatedSeller) {
+        handleSuccess(res, updatedSeller, "Seller updated successfully", statusCode?.OK);
+      } else {
+        handleFail(res, "Seller not found", statusCode?.NOT_FOUND);
+      }
+    } catch (error) {
+      console.log(error.message);
+      handleError(res, error.message, statusCode?.INTERNAL_SERVER_ERROR);
+    }
+  };
+export const deleteSeller = async (req, res) => {
+    try {
+      const { id } = req.query; 
+      const deletedSeller = await Seller.findByIdAndDelete({_id:id});
+        if (deletedSeller) {
+        handleSuccess(res, null, "Seller deleted successfully", statusCode?.OK);
+      } else {
+        handleFail(res, "Seller not found", statusCode?.NOT_FOUND);
+      }
+    } catch (error) {
+      console.log(error.message);
+      handleError(res, error.message, statusCode?.INTERNAL_SERVER_ERROR);
+    }
+  };
+  
