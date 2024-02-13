@@ -1,26 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Invoice</title>
-    <style>
-        /* Add your custom CSS styles here */
-    </style>
+  <title><%= title %></title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </head>
 <body>
-    <h1>Invoice</h1>
-    <% data.forEach(invoice => { %>
-        <div>
-            <p>Name: <%= invoice.name %></p>
-            <p>Phone Number: <%= invoice.phoneNumber %></p>
-            <p>Products:</p>
-            <ul>
-                <% invoice.productName.forEach((product, index) => { %>
-                    <li><%= product %>: HSN Code - <%= invoice.hsnCode[index] %>, Rate/Length - <%= invoice.ratePerLength[index] %>, Quantity - <%= invoice.quantity[index] %>, Meter - <%= invoice.meter[index] %></li>
-                <% }); %>
-            </ul>
-        </div>
-    <% }); %>
+
+<div class="container">
+    <h3 style="text-align: center;">Raymond</h3>
+    <div style="display: flex; justify-content: space-between;">
+        <h3 style="text-align: left; flex: 1;">Gst N0: 04AUYPS3449P1Z1</h3>
+        <h3 style="text-align: center; flex: 1;">Retail</h3>
+        <h3 style="text-align: right; flex: 1;">Time:</h3>
+      </div>
+      <h3 style="text-align: center; flex: 1;">KOHINOOR SELECTION</h3>
+      <h4 style="text-align: center; flex: 1;">SCO-71-72-73, SECTOR-17C</h4>
+      <h4 style="text-align: center; flex: 1;">CHANDIGARH(UT)India</h4>
+      <h4 style="text-align: center; flex: 1;">Phone Number: 0172-2714545</h4>
+      <h4>....................................................................................................................................................................................................</h4>
+      <div style="display: flex; justify-content: space-between;">
+      <h4 style="text-align: left; flex: 1;">Invoice: KS-509</h4>
+      <h4 style="text-align: right; flex: 1;">Date: 15-07-2014</h4>
+      </div>
+      <h4 style="text-align: left; flex: 1;">M/S:BHUPINDER KUMAR AND SONS</h4>
+      <h4 style="text-align: left; flex: 1;">Near SEN.SEC. SCHOOL RING ROAD RAJPURA RNAI(PKL)<br>GST Number:06DHGPK8729A1ZE</h4>
+</div>
+
 </body>
 </html>
