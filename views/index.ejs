@@ -8,6 +8,23 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  <style>
+
+
+    table{
+      justify-content: center;
+      border-collapse: collapse;
+      width: 250px; /* Total width of the table, adjust as needed */
+      margin-left: 50px;
+    }
+
+    th, td {
+      border: 1px solid black;
+      padding-left: 60px;
+      padding-right: 60px;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
 
@@ -30,6 +47,25 @@
       <h4 style="text-align: left; flex: 1;">M/S:BHUPINDER KUMAR AND SONS</h4>
       <h4 style="text-align: left; flex: 1;">Near SEN.SEC. SCHOOL RING ROAD RAJPURA RNAI(PKL)<br>GST Number:06DHGPK8729A1ZE</h4>
 </div>
+<table border="1">
+    <thead>
+      <tr>
+        <th>HSN</th>
+        <th>Item Name/Product Name</th>
+        <th>Qt.</th>
+        <th>Size</th>
+        <th>Rate</th>
+        <th>Amount</th>
+      </tr>
+    </thead>
+    <tbody>
+        <%= getLastCreatedInnvoice %>
+      </tbody>
+</table>
+</div>
+</body>
+</html>
+
 
 </body>
 </html>

@@ -33,7 +33,8 @@
     "pdfkit": "^0.14.0",
     "save": "^2.9.0",
     "twilio": "^4.20.0",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "yup": "^1.3.3"
   },
   "devDependencies": {
     "nodemon": "^3.0.2"

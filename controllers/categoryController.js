@@ -14,7 +14,6 @@ import { v4 as uuidv4 } from "uuid";
 export const createCategory = async (req, res) => {
   try {
     const { categoryName, seller, billNo, date } = req.body;
-    console.log("categoryName",categoryName, "seller",seller, billNo, date)
     const convertedDate = new Date(date);
     let images = req.files && req.files.images;
     const bucketName = process.env.AWS_S3_BUCKET_NAME;
