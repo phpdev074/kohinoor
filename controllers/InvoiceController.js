@@ -127,6 +127,7 @@ export const getInnvoice = async (req, res) => {
       });
     }
     const template = await fs.promises.readFile("views/index.ejs", "utf8");
+    const INVOICE = `#KOHINOOR_${uuidv4()}`;
     const compiledHtml = ejs.render(template, {
       title: "Invoice",
       name,
@@ -137,7 +138,8 @@ export const getInnvoice = async (req, res) => {
       meter,
       id,
       formattedDate,
-      formattedTime
+      formattedTime,
+      INVOICE
     });
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
