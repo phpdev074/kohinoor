@@ -36,25 +36,25 @@
 <body>
 
 <div class="container">
-    <h3 style="margin-left: 20px; text-align: center; margin-top: 20px;">Raymond</h3>
-    <div style="display: flex; justify-content: space-between;">
-        <h3 style="margin-left: 20px; text-align: left; flex: 1;">Gst N0: 04AUYPS3449P1Z1</h3>
-        <h3 style="margin-left: 20px; text-align: center; flex: 1;">Retail</h3>
-        <h3 style="margin-left: 20px; text-align: right; flex: 1;">Time:<%= formattedTime %></h3>
+    <h3 style="margin-left: 20px; text-align: center; margin-top: 20px;font-family: Georgia, 'Times New Roman', Times, serif;">Raymond</h3>
+    <div style="display: flex; justify-content: space-between; font-family: Georgia, 'Times New Roman', Times, serif;">
+        <h3 style="margin-left: 20px; text-align: left; flex: 1; font-family: Georgia, 'Times New Roman', Times, serif;">Gst N0: 04AUYPS3449P1Z1</h3>
+        <h3 style="margin-left: 20px; text-align: center; flex: 1; font-family: Georgia, 'Times New Roman', Times, serif;">Retail</h3>
+        <h3 style="margin-left: 20px; text-align: right; flex: 1; font-family: Georgia, 'Times New Roman', Times, serif;">Time:<%= formattedTime %></h3>
       </div>
-      <div style="margin-left: 20px; text-align: left; flex: 1;width:10px;height: 10px;" class="logo">
+      <div style="margin-left: 20px; text-align: left; flex: 1;width:10px;height: 10px; font-family: Georgia, 'Times New Roman', Times, serif;" class="logo">
         <img style="margin-left: 20px; text-align: center;margin-top: 20px; margin-left: 2px; flex: 1;width:150;height: 150px;" src="https://kohinoorsethi.s3.ap-south-1.amazonaws.com/imgpsh_fullsize_anim.png">
       </div>
-      <h3 style="margin-left: 20px; text-align: center; flex: 1;">KOHINOOR SELECTIONS</h3>
-      <h4 style="margin-left: 20px; text-align: center; flex: 1;">SCO-39-40, SECTOR-17C</h4>
-      <h4 style="margin-left: 20px; text-align: center; flex: 1;">CHD(UT)India</h4>
-      <h4 style="margin-left: 20px; text-align: center; flex: 1;">Phone Number: 0172-2714545</h4>
+      <h3 style="margin-left: 20px; text-align: center; flex: 1; font-family: Georgia, 'Times New Roman', Times, serif;">KOHINOOR SELECTIONS</h3>
+      <h4 style="margin-left: 20px; text-align: center; flex: 1; font-family: Georgia, 'Times New Roman', Times, serif;">SCO-39-40, SECTOR-17C</h4>
+      <h4 style="margin-left: 20px; text-align: center; flex: 1; font-family: Georgia, 'Times New Roman', Times, serif;">CHD(UT)India</h4>
+      <h4 style="margin-left: 20px; text-align: center; flex: 1; font-family: Georgia, 'Times New Roman', Times, serif;" >Phone Number: 0172-2714545</h4>
       <div style="display: flex; justify-content: space-between;">
-      <h4 style="margin-left: 20px; text-align: left; flex: 1;">Invoice: <%= id %></h4>
-      <h4 style="margin-left: 20px; text-align: right; flex: 1;">Date:<%=formattedDate%></h4>
+      <h4 style="margin-left: 20px; text-align: left; flex: 1; font-family: Georgia, 'Times New Roman', Times, serif;">Invoice: <%= id %></h4>
+      <h4 style="margin-left: 20px; text-align: right; flex: 1; font-family: Georgia, 'Times New Roman', Times, serif;">Date:<%=formattedDate%></h4>
       </div>
-      <h4 style="margin-left: 20px; text-align: left; flex: 1;">Name:<%= name %></h4>
-      <h4 style="margin-left: 20px; text-align: left; flex: 1;">Near SEN.SEC. SCHOOL RING ROAD RAJPURA RNAI(PKL)<br>GST Number:06DHGPK8729A1ZE</h4>
+      <h4 style="margin-left: 20px; text-align: left; flex: 1; font-family: Georgia, 'Times New Roman', Times, serif;">Name:<%= name %></h4>
+      <h4 style="margin-left: 20px; text-align: left; flex: 1; font-family: Georgia, 'Times New Roman', Times, serif;">Near SEN.SEC. SCHOOL RING ROAD RAJPURA RNAI(PKL)<br>GST Number:06DHGPK8729A1ZE</h4>
 </div>
 <table border="1">
     <thead>
@@ -88,26 +88,26 @@
   
       <!-- Display total row after the loop -->
       <tr>
-        <td colspan="5" style="text-align: right; flex: 1">Total</td>
+        <td colspan="5" style="text-align: right; flex: 1 ;font-family: Georgia, 'Times New Roman', Times, serif;">Total</td>
         <td><%= totalAmount %></td>
       </tr>
       <tr>
-        <td colspan="5" style="text-align: right; flex: 1">CGST</td>
+        <td colspan="5" style="text-align: right; flex: 1;font-family: Georgia, 'Times New Roman', Times, serif;">CGST</td>
         <td><%= ((totalAmount * 0.05)/2).toFixed(3)%></td>
       </tr>
       <tr>
-        <td colspan="5" style="text-align: right; flex: 1">SGST</td>
+        <td colspan="5" style="text-align: right; flex: 1;font-family: Georgia, 'Times New Roman', Times, serif;">SGST</td>
         <td><%= ((totalAmount * 0.05)/2).toFixed(3)%></td>
       </tr>
     </tbody>
   </table>
-  <h2 style="text-align: center; flex: 1;">Bill Amount <%= totalAmount + ((totalAmount * 0.05) / 2) * 2 %></h2>
-<h5 style="text-align: center; flex: 1;">CGST <%= ((totalAmount * 0.05)/2).toFixed(3) %></h5>
-<h5 style="text-align: center; flex: 1;">SGST <%= ((totalAmount * 0.05)/2).toFixed(3) %></h5>
-<h6 style="text-align: center; flex: 1;">Including of GST Tax</h6>
-<h6 style="text-align: center; flex: 1;">Thanks For Visit</h6>
-<h6 style="text-align: center; flex: 1;">Please Kindly Visit Again</h6>
-<h6 style="text-align: center; margin-left: 750px; flex: 1;">Signature</h6>
+  <h2 style="text-align: center; flex: 1; font-family: Georgia, 'Times New Roman', Times, serif;">Bill Amount <%= totalAmount + ((totalAmount * 0.05) / 2) * 2 %></h2>
+<h5 style="text-align: center; flex: 1; font-family: Georgia, 'Times New Roman', Times, serif;">CGST <%= ((totalAmount * 0.05)/2).toFixed(3) %></h5>
+<h5 style="text-align: center; flex: 1; font-family: Georgia, 'Times New Roman', Times, serif;">SGST <%= ((totalAmount * 0.05)/2).toFixed(3) %></h5>
+<h6 style="text-align: center; flex: 1; font-family: Georgia, 'Times New Roman', Times, serif;">Including of GST Tax</h6>
+<h6 style="text-align: center; flex: 1; font-family: Georgia, 'Times New Roman', Times, serif;">Thanks For Visit</h6>
+<h6 style="text-align: center; flex: 1; font-family: Georgia, 'Times New Roman', Times, serif;">Please Kindly Visit Again</h6>
+<h6 style="text-align: center; margin-left: 750px; flex: 1; font-family: Georgia, 'Times New Roman', Times, serif;">Signature</h6>
 </div>
 </body>
 </html>
