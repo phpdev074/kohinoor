@@ -8,12 +8,12 @@ export const adminRegistration = async (req, res) => {
     return res.status(400).json({ errors: errors.array() });
   }
   try {
-    const { name, phoneNumber, password } = req.body;
+    const { name, phoneNumber, password,status } = req.body;
     const existingUser = await adminSchema.findOne({ phoneNumber });
     if (existingUser) {
       return res.status(400).json({ error: "Phone Number is already registered" });
     }
-    const newUser = new adminSchema({ name, phoneNumber, password });
+    const newUser = new adminSchema({ name, phoneNumber, password,status });
     await newUser.save();
     const token = jwt.sign({ userId: newUser._id }, process.env.SECRET_KEY);
 
