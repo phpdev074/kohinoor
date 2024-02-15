@@ -119,7 +119,7 @@ export const getInnvoice = async (req, res) => {
         month: '2-digit',
         year: 'numeric',
       });
-      formattedTime = createdAt.toLocaleTimeString('en-US', {
+      formattedTime = createdAt.toLocaleTimeString('en-GB', {
         hour12: false,
         hour: '2-digit',
         minute: '2-digit',
@@ -145,7 +145,7 @@ export const getInnvoice = async (req, res) => {
     const page = await browser.newPage();
     await page.setContent(compiledHtml);
     const pdfFileName = `${uuidv4()}_invoice.pdf`;
-    await page.pdf({ path:pdfFileName, format: "A4" });
+    await page.pdf({ path:pdfFileName, format: "A9" });
     await browser.close();
     const bucketName = process.env.AWS_S3_BUCKET_NAME;
     const bucketParams = {
