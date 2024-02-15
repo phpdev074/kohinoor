@@ -93,27 +93,50 @@ export const getInnvoice = async (req, res) => {
     const getLastCreatedInnvoice = await Invoice.find()
       .sort({ $natural: -1 })
       .limit(1);
+    let name = ""
+    let id=""
     let productName = "";
     let hsnCode = "";
     let ratePerLength = "";
     let quantity = "";
     let meter = "";
+    let createdAt="";
+    let formattedDate=""
+    let formattedTime=""
     if (getLastCreatedInnvoice.length > 0) {
       const lastInvoice = getLastCreatedInnvoice[0];
+      name = lastInvoice.name
+      id = lastInvoice?._id
       productName = lastInvoice.productName || "";
       hsnCode = lastInvoice.hsnCode || "";
       ratePerLength = lastInvoice.ratePerLength || "";
       quantity = lastInvoice.quantity || "";
       meter = lastInvoice.meter || "";
+      createdAt = new Date(lastInvoice?.createdAt)
+       formattedDate = createdAt.toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+      });
+      formattedTime = createdAt.toLocaleTimeString('en-US', {
+        hour12: false,
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+      });
     }
     const template = await fs.promises.readFile("views/index.ejs", "utf8");
     const compiledHtml = ejs.render(template, {
       title: "Invoice",
+      name,
       productName,
       hsnCode,
       ratePerLength,
       quantity,
       meter,
+      id,
+      formattedDate,
+      formattedTime
     });
     const browser = await puppeteer.launch();
     const page = await browser.newPage();

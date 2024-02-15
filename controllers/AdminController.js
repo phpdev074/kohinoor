@@ -16,12 +16,8 @@ export const adminRegistration = async (req, res) => {
     const newUser = new adminSchema({ name, phoneNumber, password,status });
     await newUser.save();
     const token = jwt.sign({ userId: newUser._id }, process.env.SECRET_KEY);
-
-    // Remove password from the response
     const userResponse = newUser.toObject();
     delete userResponse.password;
-
-    // Send the token as part of the response
     res.status(200).json({ user: userResponse, token });
   } catch (err) {
     console.error(err.message);

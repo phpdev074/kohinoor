@@ -15,7 +15,7 @@
       justify-content: center;
       border-collapse: collapse;
       width: 250px; /* Total width of the table, adjust as needed */
-      margin-left: 100px;
+      margin-left: 50px;
       margin-top:50px;
     }
 
@@ -35,11 +35,11 @@
 <body>
 
 <div class="container">
-    <h3 style="text-align: center;">Raymond</h3>
+    <h3 style="text-align: center; margin-top: 20px;">Raymond</h3>
     <div style="display: flex; justify-content: space-between;">
         <h3 style="text-align: left; flex: 1;">Gst N0: 04AUYPS3449P1Z1</h3>
         <h3 style="text-align: center; flex: 1;">Retail</h3>
-        <h3 style="text-align: right; flex: 1;">Time:</h3>
+        <h3 style="text-align: right; flex: 1;">Time:<%= formattedTime %></h3>
       </div>
       <div style="text-align: left; flex: 1;width:10px;height: 10px;" class="logo">
         <img style="text-align: center;margin-top: 20px; margin-left: 60px; flex: 1;width:150;height: 150px;" src="https://kohinoorsethi.s3.ap-south-1.amazonaws.com/imgpsh_fullsize_anim.png">
@@ -48,12 +48,12 @@
       <h4 style="text-align: center; flex: 1;">SCO-39-40, SECTOR-17C</h4>
       <h4 style="text-align: center; flex: 1;">CHD(UT)India</h4>
       <h4 style="text-align: center; flex: 1;">Phone Number: 0172-2714545</h4>
-      <h4>...........................................................................................................................................................................................</h4>
+      <h4>.............................................................................................................................................................................</h4>
       <div style="display: flex; justify-content: space-between;">
-      <h4 style="text-align: left; flex: 1;">Invoice: KS-509</h4>
-      <h4 style="text-align: right; flex: 1;">Date: 15-07-2014</h4>
+      <h4 style="text-align: left; flex: 1;">Invoice: <%= id %></h4>
+      <h4 style="text-align: right; flex: 1;">Date:<%=formattedDate%></h4>
       </div>
-      <h4 style="text-align: left; flex: 1;">M/S:BHUPINDER KUMAR AND SONS</h4>
+      <h4 style="text-align: left; flex: 1;">Name:<%= name %></h4>
       <h4 style="text-align: left; flex: 1;">Near SEN.SEC. SCHOOL RING ROAD RAJPURA RNAI(PKL)<br>GST Number:06DHGPK8729A1ZE</h4>
 </div>
 <table border="1">
