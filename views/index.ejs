@@ -92,17 +92,17 @@
       </tr>
       <tr>
         <td colspan="5" style="text-align: right; flex: 1">CGST</td>
-        <td><%= (totalAmount * 0.05)/2 %></td>
+        <td><%= ((totalAmount * 0.05)/2).toFixed(3)%></td>
       </tr>
       <tr>
         <td colspan="5" style="text-align: right; flex: 1">SGST</td>
-        <td><%= (totalAmount * 0.05)/2 %></td>
+        <td><%= ((totalAmount * 0.05)/2).toFixed(3)%></td>
       </tr>
     </tbody>
   </table>
   <h2 style="text-align: center; flex: 1;">Bill Amount <%= totalAmount + ((totalAmount * 0.05) / 2) * 2 %></h2>
-<h5 style="text-align: center; flex: 1;">CGST <%= (totalAmount * 0.05) / 2 %></h5>
-<h5 style="text-align: center; flex: 1;">SGST <%= (totalAmount * 0.05) / 2 %></h5>
+<h5 style="text-align: center; flex: 1;">CGST <%= ((totalAmount * 0.05)/2).toFixed(3) %></h5>
+<h5 style="text-align: center; flex: 1;">SGST <%= ((totalAmount * 0.05)/2).toFixed(3) %></h5>
 <h6 style="text-align: center; flex: 1;">Including of GST Tax</h6>
 <h6 style="text-align: center; flex: 1;">Thanks For Visit</h6>
 <h6 style="text-align: center; flex: 1;">Please Kindly Visit Again</h6>
