@@ -15,7 +15,8 @@
       justify-content: center;
       border-collapse: collapse;
       width: 250px; /* Total width of the table, adjust as needed */
-      margin-left: 50px;
+      margin-left: 100px;
+      margin-top:50px;
     }
 
     th, td {
@@ -23,6 +24,11 @@
       padding-left: 60px;
       padding-right: 60px;
       text-align: center;
+    }
+    .image img {
+        width: 10px; 
+        height: 10px;   
+        align-items: left;
     }
   </style>
 </head>
@@ -35,11 +41,14 @@
         <h3 style="text-align: center; flex: 1;">Retail</h3>
         <h3 style="text-align: right; flex: 1;">Time:</h3>
       </div>
-      <h3 style="text-align: center; flex: 1;">KOHINOOR SELECTION</h3>
-      <h4 style="text-align: center; flex: 1;">SCO-71-72-73, SECTOR-17C</h4>
-      <h4 style="text-align: center; flex: 1;">CHANDIGARH(UT)India</h4>
+      <div style="text-align: left; flex: 1;width:10px;height: 10px;" class="logo">
+        <img style="text-align: center;margin-top: 20px; margin-left: 60px; flex: 1;width:150;height: 150px;" src="https://kohinoorsethi.s3.ap-south-1.amazonaws.com/imgpsh_fullsize_anim.png">
+      </div>
+      <h3 style="text-align: center; flex: 1;">KOHINOOR SELECTIONS</h3>
+      <h4 style="text-align: center; flex: 1;">SCO-39-40, SECTOR-17C</h4>
+      <h4 style="text-align: center; flex: 1;">CHD(UT)India</h4>
       <h4 style="text-align: center; flex: 1;">Phone Number: 0172-2714545</h4>
-      <h4>....................................................................................................................................................................................................</h4>
+      <h4>...........................................................................................................................................................................................</h4>
       <div style="display: flex; justify-content: space-between;">
       <h4 style="text-align: left; flex: 1;">Invoice: KS-509</h4>
       <h4 style="text-align: right; flex: 1;">Date: 15-07-2014</h4>
@@ -59,9 +68,46 @@
       </tr>
     </thead>
     <tbody>
-        <%= getLastCreatedInnvoice %>
-      </tbody>
-</table>
+      <% 
+        let totalAmount = 0; 
+        for (let i = 0; i < hsnCode.length; i++) { 
+          const quantityValue = parseInt(quantity[i]) || 0;
+          const ratePerLengthValue = parseInt(ratePerLength[i]) || 0;
+          const amountValue = quantityValue * ratePerLengthValue;
+          totalAmount += amountValue;
+      %>
+        <tr>
+          <td><%= hsnCode[i] %></td>
+          <td><%= productName[i] %></td>
+          <td><%= quantity[i] %></td>
+          <td><%= meter[i] %></td>
+          <td><%= ratePerLength[i] %></td>
+          <td><%= amountValue %></td>
+        </tr>
+      <% } %> 
+  
+      <!-- Display total row after the loop -->
+      <tr>
+        <td colspan="5" style="text-align: right; flex: 1">Total</td>
+        <td><%= totalAmount %></td>
+      </tr>
+      <tr>
+        <td colspan="5" style="text-align: right; flex: 1">CGST</td>
+        <td><%= (totalAmount * 0.05)/2 %></td>
+      </tr>
+      <tr>
+        <td colspan="5" style="text-align: right; flex: 1">SGST</td>
+        <td><%= (totalAmount * 0.05)/2 %></td>
+      </tr>
+    </tbody>
+  </table>
+  <h2 style="text-align: center; flex: 1;">Bill Amount <%= totalAmount + ((totalAmount * 0.05) / 2) * 2 %></h2>
+<h5 style="text-align: center; flex: 1;">CGST <%= (totalAmount * 0.05) / 2 %></h5>
+<h5 style="text-align: center; flex: 1;">SGST <%= (totalAmount * 0.05) / 2 %></h5>
+<h6 style="text-align: center; flex: 1;">Including of GST Tax</h6>
+<h6 style="text-align: center; flex: 1;">Thanks For Visit</h6>
+<h6 style="text-align: center; flex: 1;">Please Kindly Visit Again</h6>
+<h6 style="text-align: center; margin-left: 750px; flex: 1;">Signature</h6>
 </div>
 </body>
 </html>

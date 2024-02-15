@@ -6,7 +6,7 @@ import Invoice from '../models/innvoiceSchema.js';
 const invoiceRouter = express.Router();
 invoiceRouter.post("/",verifyAuthToken,validationMiddleware,createInvoice)
 invoiceRouter.post("/seller",verifyAuthToken,createSeller)
-invoiceRouter.get("/get-invoice",getInnvoice)
+invoiceRouter.get("/get-invoice",verifyAuthToken,getInnvoice)
 invoiceRouter.get("/get-seller-list",verifyAuthToken,getAllSeller)
 invoiceRouter.get("/get-invoice-list",verifyAuthToken,getAllInvoice)
 invoiceRouter.put("/update-seller",verifyAuthToken,updateSeller)

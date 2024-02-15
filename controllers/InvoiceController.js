@@ -1,8 +1,10 @@
 import Invoice from "../models/innvoiceSchema.js";
-import { fileURLToPath } from "url";
-import path, { dirname } from "path";
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+import fs from "fs";
+import ejs from "ejs"
+import puppeteer from "puppeteer";
+import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { s3Client } from "../Helpers/AwsConfig.js";
+import { v4 as uuidv4 } from "uuid";
 import {
   handleSuccess,
   handleFail,
@@ -10,7 +12,6 @@ import {
 } from "../responseHandler/response.js";
 import Seller from "../models/sellerSchema.js";
 import statusCode from "../constants/statusCode.js";
-import pdfkit from "pdfkit";
 export const createInvoice = async (req, res) => {
   try {
     const {
@@ -88,147 +89,54 @@ export const getAllInvoice = async (req, res) => {
   }
 };
 export const getInnvoice = async (req, res) => {
-try {
+  try {
     const getLastCreatedInnvoice = await Invoice.find()
-    .sort({ $natural: -1 })
-    .limit(1);
+      .sort({ $natural: -1 })
+      .limit(1);
+    let productName = "";
+    let hsnCode = "";
+    let ratePerLength = "";
+    let quantity = "";
+    let meter = "";
+    if (getLastCreatedInnvoice.length > 0) {
+      const lastInvoice = getLastCreatedInnvoice[0];
+      productName = lastInvoice.productName || "";
+      hsnCode = lastInvoice.hsnCode || "";
+      ratePerLength = lastInvoice.ratePerLength || "";
+      quantity = lastInvoice.quantity || "";
+      meter = lastInvoice.meter || "";
+    }
+    const template = await fs.promises.readFile("views/index.ejs", "utf8");
+    const compiledHtml = ejs.render(template, {
+      title: "Invoice",
+      productName,
+      hsnCode,
+      ratePerLength,
+      quantity,
+      meter,
+    });
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    await page.setContent(compiledHtml);
+    const pdfFileName = `${uuidv4()}_invoice.pdf`;
+    await page.pdf({ path:pdfFileName, format: "A4" });
+    await browser.close();
+    const bucketName = process.env.AWS_S3_BUCKET_NAME;
+    const bucketParams = {
+      Bucket: bucketName,
+      Key: pdfFileName,
+      Body: await fs.promises.readFile(pdfFileName),
+      ContentType: "application/pdf",
+    };
+    const uploadCommand = new PutObjectCommand(bucketParams);
+    await s3Client.send(uploadCommand);
+    const accessibleUrl = `https://${bucketParams.Bucket}.s3.${process.env.REGION}.amazonaws.com/${pdfFileName}`;
+    await fs.promises.unlink(pdfFileName);
+    handleSuccess(res,accessibleUrl,"Pdf Generated successfully",statusCode?.OK)
+  } catch (error) {
+    console.log(error.message)
+  }
 
-        res.render("index",{title:"Invoice",getLastCreatedInnvoice})
-} catch (error) {
-    
-}
-
-
-
-
-//   try {
-//     const getLastCreatedInnvoice = await Invoice.find()
-//       .sort({ $natural: -1 })
-//       .limit(1);
-//     console.log(getLastCreatedInnvoice);
-//     const headers = [
-//       "HSN Code",
-//       "Product Name",
-//       "Rate per length",
-//       "Quantity",
-//       "Meter",
-//     ];
-//     const tableData = getLastCreatedInnvoice.map((item) => ({
-//       productName: item.productName,
-//       hsnCode: item.hsnCode,
-//       ratePerLength: item.ratePerLength,
-//       quantity: item.quantity,
-//       meter: item.meter,
-//     }));
-
-//     const tableTop = 500;
-//     const rowHeight = 30;
-//     const colWidth = 100;
-//     const tableLeft = 30;
-//     const doc = new pdfkit();
-
-//     doc
-//       .fontSize(15)
-//       .font("Helvetica-Bold")
-//       .text("Raymond", { align: "center" })
-//       .moveDown();
-//     doc
-//       .fontSize(15)
-//       .font("Helvetica-Bold")
-//       .text("GST No. 04AUYPS3449PIZI", { align: "left" })
-//       .moveUp(1)
-//       .font("Helvetica-Bold")
-//       .text("Retail", { align: "center" })
-//       .moveUp(1)
-//       .font("Helvetica-Bold")
-//       .text("Time", { align: "right" })
-//       .moveDown();
-//     doc
-//       .fontSize(24)
-//       .font("Helvetica-Bold")
-//       .text("Kohinoor Selections", { align: "center" })
-//       .moveDown();
-//     doc
-//       .fontSize(15)
-//       .font("Helvetica")
-//       .text("SCO-71-72-73 SECTOR-17C", { align: "center" })
-//       .moveDown(0.5);
-//     doc
-//       .fontSize(15)
-//       .font("Helvetica")
-//       .text("CHANDIGARH(UT) India", { align: "center" })
-//       .moveDown(0.5);
-//     doc
-//       .fontSize(15)
-//       .font("Helvetica")
-//       .text("Phone N0.: 0172-2714545", { align: "center" })
-//       .moveDown();
-//     doc
-//       .fontSize(15)
-//       .font("Helvetica-Bold")
-//       .text(
-//         "..................................................................................",
-//         { align: "center" }
-//       )
-//       .moveDown();
-//     doc
-//       .fontSize(15)
-//       .font("Helvetica")
-//       .text("INVOICE:", { align: "left" })
-//       .moveUp(1)
-//       .text("Date:", { align: "right" })
-//       .moveDown();
-//     doc
-//       .fontSize(15)
-//       .font("Helvetica")
-//       .text("M/S:", { align: "left" })
-//       .moveDown(0.5);
-//     doc
-//       .fontSize(15)
-//       .font("Helvetica")
-//       .text("NEAR SEN. SEC. SCHOOL RINGROAD RAJPURA RANI(pkl)", {
-//         align: "left",
-//       })
-//       .moveDown();
-//     doc
-//       .fontSize(15)
-//       .font("Helvetica")
-//       .text("GST No. ", { align: "left" })
-//       .moveDown();
-//     doc.fontSize(11).font("Helvetica-Bold");
-//     headers.forEach((header, i) => {
-//       const xPos = tableLeft + i * colWidth;
-//       const yPos = tableTop;
-//       const cellWidth = colWidth;
-//       const cellHeight = rowHeight;
-//       doc.rect(xPos, yPos, cellWidth, cellHeight).stroke();
-//       doc.text(header, xPos + 5, yPos + 5);
-//     });
-//     doc.fontSize(11).font("Helvetica");
-//     tableData.forEach((row, rowIndex) => {
-//       Object.entries(row).forEach(([key, value], colIndex) => {
-//         const xPos = tableLeft + colIndex * colWidth;
-//         const yPos = tableTop + (rowIndex + 1) * rowHeight;
-//         const cellWidth = colWidth;
-//         const cellHeight = rowHeight;
-//         const lines = Array.isArray(value) ? value : [value];
-//         lines.forEach((line, index) => {
-//           doc.text(String(line), xPos + 5, yPos + index * rowHeight, {
-//             width: cellWidth,
-//           });
-//         });
-//       });
-//     });
-
-//     res.setHeader("Content-Type", "application/pdf");
-//     res.setHeader("Content-Disposition", 'attachment; filename="invoice.pdf"');
-//     doc.pipe(res);
-//     doc.end();
-//     console.log(getLastCreatedInnvoice);
-//   } catch (error) {
-//     const message = error.message;
-//     handleError(res, message, statusCode?.INTERNAL_SERVER_ERROR);
-//   }
 };
 export const createSeller = async (req, res) => {
   try {
