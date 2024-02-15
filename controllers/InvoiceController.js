@@ -93,6 +93,7 @@ export const getInnvoice = async (req, res) => {
     const getLastCreatedInnvoice = await Invoice.find()
       .sort({ $natural: -1 })
       .limit(1);
+      console.log(getLastCreatedInnvoice)
     let name = ""
     let id=""
     let productName = "";
