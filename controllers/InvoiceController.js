@@ -153,7 +153,7 @@ export const getInnvoice = async (req, res) => {
     const page = await browser.newPage();
     await page.setContent(compiledHtml);
     const pdfFileName = `${uuidv4()}_invoice.pdf`;
-    await page.pdf({ path:pdfFileName, format: "A7" });
+    await page.pdf({ path:pdfFileName, format: "A4" });
     await browser.close();
     const bucketName = process.env.AWS_S3_BUCKET_NAME;
     const bucketParams = {
