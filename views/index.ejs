@@ -11,21 +11,18 @@
   <style>
 
 
-    table{
-      justify-content: center;
-      border-collapse: collapse;
-      width: 250px; /* Total width of the table, adjust as needed */
-      margin-right: auto;
-      margin-left: auto;
-      margin-top:50px;
-    }
+table {
+    justify-content: center;
+    border-collapse: collapse;
+    width: 95%; 
+    margin: 50px auto; 
+  }
 
-    th, td {
-      border: 1px solid black;
-      padding-left: 60px;
-      padding-right: 60px;
-      text-align: center;
-    }
+  th, td {
+    border: 1px solid black;
+    padding: 10px; /* Adjust padding as needed */
+    text-align: center;
+  }
     .image img {
         width: 10px; 
         height: 10px;   
@@ -34,32 +31,30 @@
   </style>
 </head>
 <body>
-
+<div class="body">
 <div class="container">
-    <h5 style="margin-left: 20px; text-align: center; margin-top: 20px;font-family: Georgia, 'Times New Roman', Times, serif;">Raymond</h5>
+    <h5 style="margin-left: 20px; text-align: center;font-family: Georgia, 'Times New Roman', Times, serif;">Raymond</h5>
     <div style="display: flex; justify-content: space-between; font-family: Georgia, 'Times New Roman', Times, serif;">
         <h5 style="margin-left: 20px;  flex: 1; font-family: Georgia, 'Times New Roman', Times, serif;">Retail</h5>
         <h5 style="margin-left: 20px; text-align: right; flex: 1; font-family: Georgia, 'Times New Roman', Times, serif;">Date:<%=formattedDate%> Time:<%= formattedTime %></h5>
-      </div>
-      <div style="float:left;margin-left: 20px;" class="logo">
-        <img style="width:250px;height: 250px;" src="https://kohinoorsethi.s3.ap-south-1.amazonaws.com/imgpsh_fullsize_anim.png">
-      </div>
-      <h5 style="margin-left: 20px; text-align: center; flex: 1; font-family: Georgia, 'Times New Roman', Times, serif;">KOHINOOR SELECTIONS</h5>
-      <h5 style="margin-left: 20px; text-align: center; flex: 1; font-family: Georgia, 'Times New Roman', Times, serif;">SCO-39-40, SECTOR-17C</h5>
-      <h5 style="margin-left: 20px; text-align: center; flex: 1; font-family: Georgia, 'Times New Roman', Times, serif;">CHD(UT)India</h5>
-      <h5 style="margin-left: 20px; text-align: center; flex: 1; font-family: Georgia, 'Times New Roman', Times, serif;" >Phone Number: 0172-2714545</h5>
-      <h5 style="margin-left: 20px; text-align: left; flex: 1; font-family: Georgia, 'Times New Roman', Times, serif;">Invoice: <%= INVOICE %></h5>
-      <h5 style="margin-left: 20px; text-align: left; flex: 1; font-family: Georgia, 'Times New Roman', Times, serif;">Name:<%= name %></h5>
-      <h5 style="margin-left: 20px; text-align: left; flex: 1; font-family: Georgia, 'Times New Roman', Times, serif;">Phone Number:<%= phoneNumber %></h5>
-      <h5 style="margin-left: 20px; text-align: left; flex: 1; font-family: Georgia, 'Times New Roman', Times, serif;">Near SEN.SEC. SCHOOL RING ROAD RAJPURA RNAI(PKL)</h5>
+    </div>
+      <img style="width:200px;height:200px; float: left;margin-left: 20px;" src="https://kohinoorsethi.s3.ap-south-1.amazonaws.com/imgpsh_fullsize_anim.png"><br><br>
+      <h5 style="margin-left: 450px; flex: 1; font-family: Georgia, 'Times New Roman', Times, serif;">KOHINOOR SELECTIONS</h5>
+      <h5 style="margin-left: 450px; flex: 1; font-family: Georgia, 'Times New Roman', Times, serif;">SCO-39-40, SECTOR-17C</h5>
+      <h5 style="margin-left: 500px; flex: 1; font-family: Georgia, 'Times New Roman', Times, serif;">CHD(UT)India</h5><br><br>
+      <h5 style="text-align: left; flex: 1; font-family: Georgia, 'Times New Roman', Times, serif;"></h5>
+      <h5 style="text-align: left; flex: 1; font-family: Georgia, 'Times New Roman', Times, serif;">Invoice: <%= INVOICE %></h5>
+      <h5 style="text-align: left; flex: 1; font-family: Georgia, 'Times New Roman', Times, serif;">Name:<%= name %></h5>
+      <h5 style="text-align: left; flex: 1; font-family: Georgia, 'Times New Roman', Times, serif;">Phone Number:<%= phoneNumber %></h5>
+      <h5 style="text-align: left; flex: 1; font-family: Georgia, 'Times New Roman', Times, serif;">Near SEN.SEC. SCHOOL RING ROAD RAJPURA RNAI(PKL)</h5>
 </div>
 <table border="1">
     <thead>
       <tr>
         <th>HSN</th>
         <th>Item Name/Product Name</th>
-        <th>Qt.</th>
-        <th>Size</th>
+        <th style="width:35px;">Quantity</th>
+        <th style="width:35px;">Size</th>
         <th>Rate</th>
         <th>Amount</th>
       </tr>
@@ -76,35 +71,35 @@
         <tr>
           <td><%= hsnCode[i] %></td>
           <td><%= productName[i] %></td>
-          <td><%= quantity[i] %></td>
-          <td><%= meter[i] %></td>
+          <td style="width:35px;"><%= quantity[i] %></td>
+          <td style="width:35px;"><%= meter[i] %></td>
           <td><%= ratePerLength[i] %></td>
           <td><%= amountValue %></td>
         </tr>
       <% } %> 
-  
       <!-- Display total row after the loop -->
       <tr>
-        <td colspan="5" style="text-align: right; flex: 1 ;font-family: Georgia, 'Times New Roman', Times, serif;">Total</td>
+        <td colspan="5" style="text-align: right; font-family: Georgia, 'Times New Roman', Times, serif;">Total</td>
         <td><%= totalAmount %></td>
       </tr>
       <tr>
-        <td colspan="5" style="text-align: right; flex: 1;font-family: Georgia, 'Times New Roman', Times, serif;">CGST</td>
+        <td colspan="5" style="text-align: right; font-family: Georgia, 'Times New Roman', Times, serif;">CGST</td>
         <td><%= ((totalAmount * 0.05)/2).toFixed(3)%></td>
       </tr>
       <tr>
-        <td colspan="5" style="text-align: right; flex: 1;font-family: Georgia, 'Times New Roman', Times, serif;">SGST</td>
+        <td colspan="5" style="text-align: right; font-family: Georgia, 'Times New Roman', Times, serif;">SGST</td>
         <td><%= ((totalAmount * 0.05)/2).toFixed(3)%></td>
       </tr>
     </tbody>
-  </table>
-  <h2 style="text-align: center; flex: 1; font-family: Georgia, 'Times New Roman', Times, serif;">Bill Amount <%= totalAmount + ((totalAmount * 0.05) / 2) * 2 %></h2>
-<h5 style="text-align: center; flex: 1; font-family: Georgia, 'Times New Roman', Times, serif;">CGST <%= ((totalAmount * 0.05)/2).toFixed(3) %></h5>
-<h5 style="text-align: center; flex: 1; font-family: Georgia, 'Times New Roman', Times, serif;">SGST <%= ((totalAmount * 0.05)/2).toFixed(3) %></h5>
-<h6 style="text-align: center; flex: 1; font-family: Georgia, 'Times New Roman', Times, serif;">Including of GST Tax</h6>
-<h6 style="text-align: center; flex: 1; font-family: Georgia, 'Times New Roman', Times, serif;">Thanks For Visit</h6>
-<h6 style="text-align: center; flex: 1; font-family: Georgia, 'Times New Roman', Times, serif;">Please Kindly Visit Again</h6>
-<h6 style="text-align: center; margin-left: 750px; flex: 1; font-family: Georgia, 'Times New Roman', Times, serif;">Signature</h6>
+  </table><br><br><br>
+  <h2 style="text-align: center;margin-left: 700px; flex: 1; font-family: 'Times New Roman', Times;">Bill Amount <%= totalAmount + ((totalAmount * 0.05) / 2) * 2 %></h2>
+<h5 style="text-align: center;margin-left: 700px; flex: 1; font-family: 'Times New Roman', Times;">CGST <%= ((totalAmount * 0.05)/2).toFixed(3) %></h5>
+<h5 style="text-align: center;margin-left: 700px; flex: 1; font-family: 'Times New Roman', Times;">SGST <%= ((totalAmount * 0.05)/2).toFixed(3) %></h5>
+<h6 style="text-align: center;margin-left: 700px; flex: 1; font-family: 'Times New Roman', Times;">Including of GST Tax</h6>
+<h6 style="text-align: center;margin-left: 700px; flex: 1; font-family: 'Times New Roman', Times;">Thanks For Visit</h6>
+<h6 style="text-align: center;margin-left: 700px; flex: 1; font-family: 'Times New Roman', Times;">Please Kindly Visit Again</h6><br><br><br><br>
+<h6 style="text-align: center; margin-left: 750px; flex: 1; font-family: 'Times New Roman', Times;">Signature</h6>
+</div>
 </div>
 </body>
 </html>

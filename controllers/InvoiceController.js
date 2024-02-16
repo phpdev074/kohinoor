@@ -1,6 +1,6 @@
 import Invoice from "../models/innvoiceSchema.js";
 import fs from "fs";
-import ejs from "ejs"
+import ejs from "ejs";
 import puppeteer from "puppeteer";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { s3Client } from "../Helpers/AwsConfig.js";
@@ -31,7 +31,7 @@ export const createInvoice = async (req, res) => {
       : [];
     const quantityArray = quantity ? quantity.split(",").map(Number) : [];
     const meterArray = meter ? meter.split(",").map(Number) : [];
-    const uniqueId = generateUniqueId() 
+    const uniqueId = generateUniqueId();
     const savedInvoice = await Invoice.create({
       name,
       phoneNumber,
@@ -95,45 +95,47 @@ export const getInnvoice = async (req, res) => {
     const getLastCreatedInnvoice = await Invoice.find()
       .sort({ $natural: -1 })
       .limit(1);
-      console.log(getLastCreatedInnvoice)
-    let name = ""
-    let id=""
+    console.log(getLastCreatedInnvoice);
+    let name = "";
+    let id = "";
     let productName = "";
     let hsnCode = "";
     let ratePerLength = "";
     let quantity = "";
     let meter = "";
-    let createdAt="";
-    let formattedDate=""
-    let formattedTime=""
-    let uniqueId= ""
-    let phoneNumber=""
+    let createdAt = "";
+    let formattedDate = "";
+    let formattedTime = "";
+    let uniqueId = "";
+    let phoneNumber = "";
     if (getLastCreatedInnvoice.length > 0) {
       const lastInvoice = getLastCreatedInnvoice[0];
-      name = lastInvoice.name
-      id = lastInvoice?._id
+      name = lastInvoice.name;
+      id = lastInvoice?._id;
       productName = lastInvoice.productName || "";
       hsnCode = lastInvoice.hsnCode || "";
       ratePerLength = lastInvoice.ratePerLength || "";
       quantity = lastInvoice.quantity || "";
       meter = lastInvoice.meter || "";
       uniqueId = lastInvoice.uniqueId || "";
-      phoneNumber = lastInvoice.phoneNumber||"";
-      createdAt = new Date(lastInvoice?.createdAt)
-       formattedDate = createdAt.toLocaleDateString('en-IN', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
+      phoneNumber = lastInvoice.phoneNumber || "";
+      createdAt = new Date(lastInvoice?.createdAt);
+      formattedDate = createdAt.toLocaleDateString("en-IN", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
       });
-      formattedTime = createdAt.toLocaleTimeString('en-IN', {
-        hour12: false,
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
+      formattedTime = createdAt.toLocaleTimeString("en-IN", {
+        hour12: true,
+        hour: "2-digit",
+        minute: "2-digit",
       });
     }
     const template = await fs.promises.readFile("views/index.ejs", "utf8");
     const INVOICE = `#KOHINOOR_${uniqueId}`;
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+
     const compiledHtml = ejs.render(template, {
       title: "Invoice",
       name,
@@ -147,14 +149,24 @@ export const getInnvoice = async (req, res) => {
       formattedTime,
       INVOICE,
       uniqueId,
-      phoneNumber
+      phoneNumber,
     });
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
+    function pixelsToMillimeters(pixels) {
+      const inches = pixels / 100;
+      const millimeters = inches * 50;
+      return millimeters;
+    }
     await page.setContent(compiledHtml);
+    const htmlHeight = await page.evaluate(() => {
+      return document.body.scrollHeight;
+    });
+    const millimeters = pixelsToMillimeters(htmlHeight);
     const pdfFileName = `${uuidv4()}_invoice.pdf`;
-    await page.pdf({ path:pdfFileName, format: "A4" });
-    await browser.close();
+    await page.pdf({
+      path: pdfFileName,
+      width: "95mm",
+      height: `${millimeters}`,
+    });
     const bucketName = process.env.AWS_S3_BUCKET_NAME;
     const bucketParams = {
       Bucket: bucketName,
@@ -162,15 +174,20 @@ export const getInnvoice = async (req, res) => {
       Body: await fs.promises.readFile(pdfFileName),
       ContentType: "application/pdf",
     };
+    await browser.close();
     const uploadCommand = new PutObjectCommand(bucketParams);
     await s3Client.send(uploadCommand);
     const accessibleUrl = `https://${bucketParams.Bucket}.s3.${process.env.REGION}.amazonaws.com/${pdfFileName}`;
     await fs.promises.unlink(pdfFileName);
-    handleSuccess(res,accessibleUrl,"Pdf Generated successfully",statusCode?.OK)
+    handleSuccess(
+      res,
+      accessibleUrl,
+      "Pdf Generated successfully",
+      statusCode?.OK
+    );
   } catch (error) {
-    console.log(error.message)
+    console.log(error.message);
   }
-
 };
 export const createSeller = async (req, res) => {
   try {
