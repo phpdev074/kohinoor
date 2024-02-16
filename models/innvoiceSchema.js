@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { string } from 'yup';
 const invoiceSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -8,6 +9,10 @@ const invoiceSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique:true
+  },
+  uniqueId:{
+    type:String,
+    required:true
   },
   productName: [{
     type: String,

@@ -4,6 +4,7 @@ import ejs from "ejs"
 import puppeteer from "puppeteer";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { s3Client } from "../Helpers/AwsConfig.js";
+import { generateUniqueId } from "../utility/generatingUniqueValue.js";
 import { v4 as uuidv4 } from "uuid";
 import {
   handleSuccess,
@@ -30,10 +31,11 @@ export const createInvoice = async (req, res) => {
       : [];
     const quantityArray = quantity ? quantity.split(",").map(Number) : [];
     const meterArray = meter ? meter.split(",").map(Number) : [];
-
+    const uniqueId = generateUniqueId() 
     const savedInvoice = await Invoice.create({
       name,
       phoneNumber,
+      uniqueId,
       productName: productNameArray,
       hsnCode: hsnCodeArray,
       ratePerLength: ratePerLengthArray,
@@ -104,6 +106,8 @@ export const getInnvoice = async (req, res) => {
     let createdAt="";
     let formattedDate=""
     let formattedTime=""
+    let uniqueId= ""
+    let phoneNumber=""
     if (getLastCreatedInnvoice.length > 0) {
       const lastInvoice = getLastCreatedInnvoice[0];
       name = lastInvoice.name
@@ -113,13 +117,15 @@ export const getInnvoice = async (req, res) => {
       ratePerLength = lastInvoice.ratePerLength || "";
       quantity = lastInvoice.quantity || "";
       meter = lastInvoice.meter || "";
+      uniqueId = lastInvoice.uniqueId || "";
+      phoneNumber = lastInvoice.phoneNumber||"";
       createdAt = new Date(lastInvoice?.createdAt)
-       formattedDate = createdAt.toLocaleDateString('en-GB', {
+       formattedDate = createdAt.toLocaleDateString('en-IN', {
         day: '2-digit',
         month: '2-digit',
         year: 'numeric',
       });
-      formattedTime = createdAt.toLocaleTimeString('en-GB', {
+      formattedTime = createdAt.toLocaleTimeString('en-IN', {
         hour12: false,
         hour: '2-digit',
         minute: '2-digit',
@@ -127,7 +133,7 @@ export const getInnvoice = async (req, res) => {
       });
     }
     const template = await fs.promises.readFile("views/index.ejs", "utf8");
-    const INVOICE = `#KOHINOOR_${uuidv4()}`;
+    const INVOICE = `#KOHINOOR_${uniqueId}`;
     const compiledHtml = ejs.render(template, {
       title: "Invoice",
       name,
@@ -139,13 +145,15 @@ export const getInnvoice = async (req, res) => {
       id,
       formattedDate,
       formattedTime,
-      INVOICE
+      INVOICE,
+      uniqueId,
+      phoneNumber
     });
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
     await page.setContent(compiledHtml);
     const pdfFileName = `${uuidv4()}_invoice.pdf`;
-    await page.pdf({ path:pdfFileName, format: "A9" });
+    await page.pdf({ path:pdfFileName, format: "A7" });
     await browser.close();
     const bucketName = process.env.AWS_S3_BUCKET_NAME;
     const bucketParams = {
