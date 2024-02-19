@@ -24,7 +24,7 @@ export const adminRegistration = async (req, res) => {
     const token = jwt.sign({ userId: newUser._id }, process.env.SECRET_KEY);
     const userResponse = newUser.toObject();
     delete userResponse.password;
-    handleSuccess(res,{ user: userResponse, token },"Admin Created successfully",statusCode?.Ok)
+    handleSuccess(res,{ user: userResponse, token },"Admin Created successfully",statusCode?.OK)
   } catch (err) {
    handleError(res,err?.message,statusCode?.INTERNAL_SERVER_ERROR)
   }
