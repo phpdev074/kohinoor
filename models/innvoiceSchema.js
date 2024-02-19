@@ -8,11 +8,11 @@ const invoiceSchema = new mongoose.Schema({
   phoneNumber: {
     type: String,
     required: true,
-    unique:true
   },
   uniqueId:{
     type:String,
-    required:true
+    required:true,
+    unique:true
   },
   productName: [{
     type: String,
