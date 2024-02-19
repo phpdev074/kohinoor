@@ -65,7 +65,8 @@ table {
         for (let i = 0; i < hsnCode.length; i++) { 
           const quantityValue = parseInt(quantity[i]) || 0;
           const ratePerLengthValue = parseInt(ratePerLength[i]) || 0;
-          const amountValue = quantityValue * ratePerLengthValue;
+          const size = parseInt(meter[i])||0
+          const amountValue = quantityValue * ratePerLengthValue*size;
           totalAmount += amountValue;
       %>
         <tr>
