@@ -44,6 +44,94 @@ export const createInvoice = async (req, res) => {
       meter: meterArray,
     });
     if (savedInvoice) {
+      const getLastCreatedInnvoice = await Invoice.find({
+        _id: savedInvoice?._id,
+      });
+      let name = "";
+      let id = "";
+      let productName = "";
+      let hsnCode = "";
+      let ratePerLength = "";
+      let quantity = "";
+      let meter = "";
+      let createdAt = "";
+      let formattedDate = "";
+      let formattedTime = "";
+      let uniqueId = "";
+      let phoneNumber = "";
+      if (getLastCreatedInnvoice.length > 0) {
+        const lastInvoice = getLastCreatedInnvoice[0];
+        name = lastInvoice.name;
+        id = lastInvoice?._id;
+        productName = lastInvoice.productName || "";
+        hsnCode = lastInvoice.hsnCode || "";
+        ratePerLength = lastInvoice.ratePerLength || "";
+        quantity = lastInvoice.quantity || "";
+        meter = lastInvoice.meter || "";
+        uniqueId = lastInvoice.uniqueId || "";
+        phoneNumber = lastInvoice.phoneNumber || "";
+        createdAt = new Date(lastInvoice?.createdAt);
+        formattedDate = createdAt.toLocaleDateString("en-IN", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+        });
+        formattedTime = createdAt.toLocaleTimeString("en-IN", {
+          hour12: true,
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+      }
+      const template = await fs.promises.readFile("views/index.ejs", "utf8");
+      const INVOICE = `#KOHINOOR_${uniqueId}`;
+      const browser = await puppeteer.launch();
+      const page = await browser.newPage();
+
+      const compiledHtml = ejs.render(template, {
+        title: "Invoice",
+        name,
+        productName,
+        hsnCode,
+        ratePerLength,
+        quantity,
+        meter,
+        id,
+        formattedDate,
+        formattedTime,
+        INVOICE,
+        uniqueId,
+        phoneNumber,
+      });
+      function pixelsToMillimeters(pixels) {
+        const inches = pixels / 100;
+        const millimeters = inches * 50;
+        return millimeters;
+      }
+      await page.setContent(compiledHtml);
+      const htmlHeight = await page.evaluate(() => {
+        return document.body.scrollHeight;
+      });
+      const millimeters = pixelsToMillimeters(htmlHeight);
+      const pdfFileName = `${uuidv4()}_invoice.pdf`;
+      await page.pdf({
+        path: pdfFileName,
+        width: "95mm",
+        height: `${millimeters}`,
+      });
+      const bucketName = process.env.AWS_S3_BUCKET_NAME;
+      const bucketParams = {
+        Bucket: bucketName,
+        Key: pdfFileName,
+        Body: await fs.promises.readFile(pdfFileName),
+        ContentType: "application/pdf",
+      };
+      await browser.close();
+      const uploadCommand = new PutObjectCommand(bucketParams);
+      await s3Client.send(uploadCommand);
+      const accessibleUrl = `https://${bucketParams.Bucket}.s3.${process.env.REGION}.amazonaws.com/${pdfFileName}`;
+      await fs.promises.unlink(pdfFileName);
+      await Invoice.findOneAndUpdate({_id:savedInvoice._id},{ file: accessibleUrl });
+      savedInvoice.file = accessibleUrl
       handleSuccess(
         res,
         savedInvoice,
@@ -93,10 +181,11 @@ export const getAllInvoice = async (req, res) => {
 };
 export const getInnvoice = async (req, res) => {
   try {
-    const invoiceId = req.query.id
-    const invoiceObjectId = new mongoose.Types.ObjectId(invoiceId)
-    const getLastCreatedInnvoice = await Invoice.find({_id:invoiceObjectId})
-      .limit(1);
+    const invoiceId = req.query.id;
+    const invoiceObjectId = new mongoose.Types.ObjectId(invoiceId);
+    const getLastCreatedInnvoice = await Invoice.find({
+      _id: invoiceObjectId,
+    }).limit(1);
     console.log(getLastCreatedInnvoice);
     let name = "";
     let id = "";
@@ -181,7 +270,7 @@ export const getInnvoice = async (req, res) => {
     await s3Client.send(uploadCommand);
     const accessibleUrl = `https://${bucketParams.Bucket}.s3.${process.env.REGION}.amazonaws.com/${pdfFileName}`;
     await fs.promises.unlink(pdfFileName);
-    await Invoice.findOneAndUpdate({file:accessibleUrl})
+    await Invoice.findOneAndUpdate({_id: invoiceObjectId},{ file: accessibleUrl });
     handleSuccess(
       res,
       accessibleUrl,
