@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Invoice from "../models/innvoiceSchema.js";
 import fs from "fs";
 import ejs from "ejs";
@@ -92,8 +93,9 @@ export const getAllInvoice = async (req, res) => {
 };
 export const getInnvoice = async (req, res) => {
   try {
-    const getLastCreatedInnvoice = await Invoice.find()
-      .sort({ $natural: -1 })
+    const invoiceId = req.query.id
+    const invoiceObjectId = new mongoose.Types.ObjectId(invoiceId)
+    const getLastCreatedInnvoice = await Invoice.find({_id:invoiceObjectId})
       .limit(1);
     console.log(getLastCreatedInnvoice);
     let name = "";
@@ -179,6 +181,7 @@ export const getInnvoice = async (req, res) => {
     await s3Client.send(uploadCommand);
     const accessibleUrl = `https://${bucketParams.Bucket}.s3.${process.env.REGION}.amazonaws.com/${pdfFileName}`;
     await fs.promises.unlink(pdfFileName);
+    await Invoice.findOneAndUpdate({file:accessibleUrl})
     handleSuccess(
       res,
       accessibleUrl,
