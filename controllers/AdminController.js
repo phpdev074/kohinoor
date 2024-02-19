@@ -2,6 +2,12 @@ import jwt from "jsonwebtoken";
 import { validationResult } from "express-validator";
 import adminSchema from "../models/adminSchema.js"
 import bcrypt from "bcrypt";
+import {
+  handleSuccess,
+  handleFail,
+  handleError,
+} from "../responseHandler/response.js";
+import statusCode from "../constants/statusCode.js";
 export const adminRegistration = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -18,10 +24,9 @@ export const adminRegistration = async (req, res) => {
     const token = jwt.sign({ userId: newUser._id }, process.env.SECRET_KEY);
     const userResponse = newUser.toObject();
     delete userResponse.password;
-    res.status(200).json({ user: userResponse, token });
+    handleSuccess(res,{ user: userResponse, token },"Admin Created successfully",statusCode?.Ok)
   } catch (err) {
-    console.error(err.message);
-    res.status(500).json({ error: "Internal Server Error" });
+   handleError(res,err?.message,statusCode?.INTERNAL_SERVER_ERROR)
   }
 };
 export const adminLogin = async (req, res) => {
@@ -32,10 +37,10 @@ export const adminLogin = async (req, res) => {
         return res.status(401).json({ success: false, error: 'Invalid Phone Number or password' });
       }
       const token = jwt.sign({ userId: user._id, userEmail: user.email }, process.env.SECRET_KEY);
-      res.status(200).json({ success: true, token, message: 'User login successful' });
+      handleSuccess(res,token,'User login successful',statusCode?.OK)
     } catch (err) {
       console.error(err);
-      res.status(400).json({ success: false, error: err.message });
+      handleError(res,err.message,statusCode?.INTERNAL_SERVER_ERROR)
     }
   };
   
