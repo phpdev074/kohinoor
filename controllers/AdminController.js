@@ -33,11 +33,12 @@ export const adminLogin = async (req, res) => {
     try {
       const { phoneNumber, password } = req.body;
       const user = await adminSchema.findOne({ phoneNumber });
+      console.log(user)
       if (!user || !(await bcrypt.compare(password, user.password))) {
         return res.status(401).json({ success: false, error: 'Invalid Phone Number or password' });
       }
-      const token = jwt.sign({ userId: user._id, userEmail: user.email }, process.env.SECRET_KEY);
-      handleSuccess(res,token,'User login successful',statusCode?.OK)
+      const token = jwt.sign({ userId: user._id, userEmail: user.email,userStatus:user?.status }, process.env.SECRET_KEY);
+      handleSuccess(res,{token,isSuperAdmin:user?.status},'User login successful',statusCode?.OK)
     } catch (err) {
       console.error(err);
       handleError(res,err.message,statusCode?.INTERNAL_SERVER_ERROR)
